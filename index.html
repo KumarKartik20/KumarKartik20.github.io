@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Kumar Kartik — Data Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+<style>
+:root{
+  --bg:#E8ECF1; --ink:#122447; --card:#FFFFFF; --card-hi:#F0F3F7;
+  --line:#122447; --line-soft:#C4CCD8;
+  --text:#122447; --muted:#4C5A70; --dim:#7E8AA0;
+  --gold:#F2621E; --teal:#0E8F72; --coral:#D6483C; --blue:#1E5FBF;
+  --sans:'IBM Plex Sans',-apple-system,sans-serif; --mono:'IBM Plex Mono',monospace; --disp:'Space Grotesk',var(--sans);
+  --sb-w:250px; --radius:6px;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100%;overflow-x:hidden;}
+
+#rail{position:fixed;top:0;left:0;width:100%;height:3px;background:transparent;z-index:999;}
+#rail-fill{height:100%;width:0%;background:var(--gold);transition:width .08s linear;}
+
+/* sidebar (solid navy block) */
+.sidebar{position:fixed;top:0;left:0;width:var(--sb-w);height:100%;background:var(--ink);
+  display:flex;flex-direction:column;padding:1.6rem 1.2rem;z-index:500;}
+.brand{display:flex;align-items:center;gap:.8rem;margin-bottom:2.2rem;cursor:pointer;}
+.brand-mark{width:38px;height:38px;border-radius:4px;background:var(--gold);
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;color:#FFFFFF;font-size:.95rem;}
+.sidebar .brand h1{font-family:var(--disp);font-size:1.02rem;font-weight:600;letter-spacing:-.01em;color:#FFFFFF;}
+.sidebar .brand p{font-family:var(--mono);font-size:.68rem;color:#8FA0C2;margin-top:2px;}
+.status-chip{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.72rem;color:#5FE0BC;
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);border-radius:4px;padding:.4rem .7rem;margin-bottom:2rem;width:fit-content;}
+.status-dot{width:6px;height:6px;border-radius:50%;background:#3CD9A8;box-shadow:0 0 0 3px rgba(60,217,168,0.2);}
+.sb-nav{display:flex;flex-direction:column;gap:.2rem;flex:1;}
+.sb-item{display:flex;align-items:center;gap:.85rem;padding:.7rem .75rem;border-radius:4px;color:#AAB6CC;
+  font-size:.88rem;font-weight:500;cursor:pointer;border:1px solid transparent;background:none;text-align:left;width:100%;}
+.sb-item i{width:16px;text-align:center;font-size:.85rem;}
+.sb-item:hover{color:#FFFFFF;background:rgba(255,255,255,0.06);}
+.sb-item.active{color:var(--ink);background:#FFFFFF;}
+.sb-item.active i{color:var(--gold);}
+.sb-foot{border-top:1px solid rgba(255,255,255,0.14);padding-top:1rem;margin-top:1rem;}
+.sb-connect{width:100%;background:var(--gold);color:#FFFFFF;border:none;font-family:var(--mono);font-weight:700;font-size:.82rem;
+  padding:.7rem;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;}
+.sb-connect:hover{background:#D5540E;}
+
+/* mobile top bar */
+.mobile-bar{display:none;position:sticky;top:0;background:var(--ink);border-bottom:2px solid var(--ink);
+  padding:.9rem 1.1rem;align-items:center;justify-content:space-between;z-index:600;gap:.6rem;}
+.mobile-bar .brand{margin:0;}
+.mobile-bar .brand h1{color:#FFFFFF;}
+.mobile-bar .brand p{color:#8FA0C2;}
+.mobile-bar-actions{display:flex;align-items:center;gap:.6rem;}
+.mobile-menu-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:#FFFFFF;width:38px;height:38px;border-radius:4px;font-size:1rem;}
+.mobile-connect-btn{background:var(--gold);border:none;color:#FFFFFF;font-family:var(--mono);font-weight:700;font-size:.76rem;
+  padding:.6rem .8rem;border-radius:4px;display:inline-flex;align-items:center;gap:.4rem;white-space:nowrap;}
+
+.mobile-drawer{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(10,16,28,.55);z-index:1500;}
+.mobile-drawer.show{display:block;}
+.mobile-drawer-panel{background:var(--ink);width:82%;max-width:320px;height:100%;padding:1.6rem 1.2rem;display:flex;flex-direction:column;}
+.mobile-drawer-close{align-self:flex-end;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,.2);color:#FFF;width:34px;height:34px;border-radius:4px;margin-bottom:1.4rem;}
+.mobile-drawer-panel .sb-item{font-size:.95rem;padding:.85rem .8rem;}
+
+main{margin-left:var(--sb-w);min-height:100vh;padding:2.4rem 3rem 5rem;max-width:1150px;}
+.crumb{font-family:var(--mono);font-size:.75rem;color:var(--dim);margin-bottom:1.6rem;}
+.crumb b{color:var(--teal);font-weight:500;}
+
+.view{display:none;animation:rise .35s ease forwards;}
+.view.active{display:block;}
+@keyframes rise{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+.hero-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:2.5rem;align-items:start;margin-bottom:3rem;}
+.eyebrow-tags{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.3rem;}
+.tag{font-family:var(--mono);font-size:.72rem;padding:.3rem .65rem;border-radius:4px;border:1px solid var(--line-soft);color:var(--muted);background:var(--card);}
+h2.hero-title{font-family:var(--disp);font-size:2.5rem;line-height:1.15;font-weight:600;letter-spacing:-.02em;margin-bottom:1.2rem;color:var(--ink);}
+.hero-title em{font-style:normal;color:var(--gold);}
+.lede{color:var(--muted);font-size:1.02rem;line-height:1.75;margin-bottom:1.1rem;max-width:62ch;}
+.pulse-note{font-family:var(--mono);font-size:.85rem;color:var(--teal);border-left:3px solid var(--teal);padding-left:.9rem;margin:1.5rem 0;}
+.term-cta{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;background:var(--card);
+  border:1px solid var(--line-soft);border-left:4px solid var(--gold);border-radius:4px;padding:1.1rem 1.3rem;margin:1.4rem 0;}
+.term-cta p{color:var(--ink);font-size:.92rem;font-weight:500;margin:0;}
+.term-cta p i{color:var(--gold);margin-right:.5rem;}
+.btn-term{background:var(--ink);color:#5FE0BC;border:none;font-family:var(--mono);font-weight:600;font-size:.82rem;
+  padding:.65rem 1.1rem;border-radius:4px;cursor:pointer;display:inline-flex;align-items:center;gap:.55rem;white-space:nowrap;}
+.btn-term:hover{background:#0C1B36;}
+.hero-actions{display:flex;gap:.8rem;margin-top:1.6rem;flex-wrap:wrap;}
+.btn{font-family:var(--sans);font-weight:600;font-size:.88rem;padding:.75rem 1.3rem;border-radius:4px;cursor:pointer;border:1px solid var(--line-soft);
+  background:var(--card);color:var(--ink);display:inline-flex;align-items:center;gap:.55rem;text-decoration:none;}
+.btn:hover{border-color:var(--ink);}
+.btn-primary{background:var(--gold);color:#FFFFFF;border:none;}
+.btn-primary:hover{background:#D5540E;}
+
+.flow-card{background:var(--card);border:1px solid var(--line-soft);border-radius:4px;padding:1.4rem;}
+.flow-card h4{font-family:var(--mono);font-size:.72rem;color:var(--dim);text-transform:uppercase;letter-spacing:.04em;margin-bottom:1rem;}
+.flow-svg{width:100%;height:auto;display:block;}
+.metric-row{display:flex;justify-content:space-between;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--line-soft);font-family:var(--mono);font-size:.78rem;}
+.metric-row span:first-child{color:var(--dim);}
+.metric-row span:last-child{color:var(--teal);font-weight:600;}
+
+.stat-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:3rem;}
+.stat{background:var(--card);border:1px solid var(--line-soft);border-radius:4px;padding:1.3rem 1.4rem;}
+.stat b{font-family:var(--disp);font-size:1.7rem;color:var(--ink);display:block;}
+.stat span{color:var(--muted);font-size:.83rem;}
+
+.section-head{display:flex;align-items:baseline;gap:.8rem;margin-bottom:1.4rem;}
+.section-head h3{font-family:var(--disp);font-size:1.35rem;font-weight:600;color:var(--ink);}
+.section-head p{color:var(--dim);font-size:.85rem;}
+
+.skills-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;}
+.skill-col{background:var(--card);border:1px solid var(--line-soft);border-radius:4px;padding:1.3rem;border-top:3px solid var(--teal);}
+.skill-col:nth-child(2){border-top-color:var(--gold);}
+.skill-col:nth-child(3){border-top-color:var(--blue);}
+.skill-col h5{font-size:.82rem;color:var(--muted);margin-bottom:.9rem;font-weight:600;}
+.chip-wrap{display:flex;flex-wrap:wrap;gap:.5rem;}
+.chip{font-family:var(--mono);font-size:.76rem;background:var(--card-hi);border:1px solid var(--line-soft);padding:.3rem .6rem;border-radius:4px;color:var(--ink);}
+
+.dag{position:relative;padding-left:2.2rem;}
+.dag::before{content:'';position:absolute;left:9px;top:10px;bottom:10px;width:2px;background:var(--gold);}
+.dag-node{position:relative;background:var(--card);border:1px solid var(--line-soft);border-radius:4px;padding:1.5rem 1.6rem;margin-bottom:1.4rem;}
+.dag-node::before{content:'';position:absolute;left:-2.05rem;top:1.6rem;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--teal);}
+.dag-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.7rem;flex-wrap:wrap;gap:.5rem;}
+.dag-stage{font-family:var(--mono);font-size:.72rem;color:var(--dim);}
+.dag-node h4{font-family:var(--disp);font-weight:600;font-size:1.1rem;margin-bottom:.6rem;color:var(--ink);}
+.dag-node p{color:var(--muted);font-size:.95rem;line-height:1.65;}
+.dag-status{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.75rem;color:var(--teal);
+  background:#E3F5EF;border:1px solid #BFE6DB;padding:.35rem .7rem;border-radius:4px;margin-top:1rem;}
+
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.3rem;}
+.proj-card{background:var(--card);border:1px solid var(--line-soft);border-radius:4px;padding:1.6rem;display:flex;flex-direction:column;justify-content:space-between;}
+.proj-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem;}
+.proj-live{display:flex;align-items:center;gap:.4rem;font-family:var(--mono);font-size:.68rem;color:var(--teal);}
+.proj-card h4{font-family:var(--disp);font-weight:600;font-size:1.1rem;margin-bottom:.7rem;color:var(--ink);}
+.proj-card p{color:var(--muted);font-size:.92rem;line-height:1.65;margin-bottom:1.2rem;}
+.proj-tech{display:flex;flex-wrap:wrap;gap:.45rem;}
+
+.cert-list{display:flex;flex-direction:column;gap:1rem;}
+.cert-row{background:var(--card);border:1px solid var(--line-soft);border-radius:4px;padding:1.4rem 1.6rem;display:grid;grid-template-columns:auto 1fr auto;gap:1.2rem;align-items:center;}
+.cert-check{width:38px;height:38px;border-radius:50%;background:#E3F5EF;border:1px solid #BFE6DB;color:var(--teal);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cert-row h4{font-family:var(--disp);font-size:1.02rem;font-weight:600;margin-bottom:.25rem;color:var(--ink);}
+.cert-row p{color:var(--dim);font-size:.78rem;font-family:var(--mono);}
+.cert-verify{font-family:var(--mono);font-size:.78rem;color:#FFFFFF;background:var(--blue);border:none;padding:.5rem .85rem;border-radius:4px;text-decoration:none;white-space:nowrap;}
+.cert-verify:hover{background:#164A99;}
+.cert-detail{grid-column:1/-1;color:var(--muted);font-size:.9rem;line-height:1.6;border-top:1px solid var(--line-soft);padding-top:1rem;margin-top:.2rem;}
+
+/* education */
+.edu-card{background:var(--card);border:1px solid var(--line-soft);border-radius:4px;padding:1.8rem 1.9rem;margin-bottom:1.4rem;border-left:4px solid var(--blue);}
+.edu-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;margin-bottom:.6rem;}
+.edu-head h4{font-family:var(--disp);font-size:1.2rem;font-weight:600;color:var(--ink);}
+.edu-head span{font-family:var(--mono);font-size:.78rem;color:var(--dim);white-space:nowrap;}
+.edu-card p{color:var(--muted);font-size:.95rem;line-height:1.7;margin-bottom:.9rem;}
+.course-tags{display:flex;flex-wrap:wrap;gap:.5rem;}
+.lead-card{background:var(--card);border:1px solid var(--line-soft);border-radius:4px;padding:1.6rem 1.8rem;border-left:4px solid var(--gold);}
+
+.term{background:#0B1220;border:1px solid var(--ink);border-radius:4px;overflow:hidden;font-family:var(--mono);}
+.term-bar{background:var(--ink);padding:.7rem 1.1rem;display:flex;align-items:center;justify-content:space-between;}
+.term-dots{display:flex;gap:.4rem;}
+.term-dots span{width:10px;height:10px;border-radius:50%;}
+.term-dots span:nth-child(1){background:var(--coral);}
+.term-dots span:nth-child(2){background:var(--gold);}
+.term-dots span:nth-child(3){background:var(--teal);}
+.term-path{font-size:.78rem;color:#8FA0C2;}
+.term-body{padding:1.4rem;height:420px;overflow-y:auto;font-size:.9rem;line-height:1.65;color:#DCE3E8;}
+.term-line{white-space:pre-wrap;word-break:break-word;margin-bottom:.8rem;}
+.term-input-row{display:flex;align-items:center;gap:.6rem;padding:1rem 1.4rem;border-top:1px dashed #2A3550;flex-wrap:wrap;}
+.term-prompt{color:#3CD9A8;font-weight:600;white-space:nowrap;font-size:.88rem;}
+.term-in-wrap{flex:1;display:flex;align-items:center;background:#121A2C;border:1px solid #2A3550;border-radius:4px;padding:.2rem .3rem;min-width:220px;}
+.term-in-wrap input{flex:1;background:none;border:none;outline:none;color:#EDEFF2;font-family:var(--mono);font-size:16px;padding:.5rem;}
+.term-send{background:var(--teal);border:none;color:#0B1410;border-radius:4px;padding:.5rem .7rem;cursor:pointer;}
+.hints{display:flex;flex-wrap:wrap;gap:.5rem;padding:0 1.4rem 1.3rem;}
+.hint{background:#121A2C;border:1px solid #2A3550;color:#5FA8FF;font-size:.76rem;padding:.35rem .7rem;border-radius:4px;cursor:pointer;}
+.hint:hover{border-color:#5FA8FF;}
+
+#bottom-runner-bar{position:fixed;bottom:0;left:0;width:100%;height:6px;background:var(--line-soft);z-index:9999;}
+#bottom-runner-fill{height:100%;width:0%;background:var(--gold);transition:width .05s ease-out;}
+#amongus-scroller{position:fixed;bottom:6px;left:0%;transform:translateX(-50%);pointer-events:none;z-index:9999;width:38px;height:44px;
+  transition:left .05s ease-out;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.25));}
+#crewmate-wrapper{width:100%;height:100%;transform-origin:center center;transition:transform .2s ease-in-out;}
+.crewmate-body{animation:amongUsRun .4s infinite alternate ease-in-out;transform-origin:bottom center;}
+@keyframes amongUsRun{0%{transform:translateY(0) rotate(-3deg);}100%{transform:translateY(-5px) rotate(4deg);}}
+
+.modal{position:fixed;inset:0;background:rgba(10,16,28,.6);display:none;align-items:center;justify-content:center;z-index:2000;padding:1rem;}
+.modal.active{display:flex;}
+.modal-box{background:var(--card);border:1px solid var(--line-soft);border-radius:4px;padding:2.4rem;max-width:520px;width:100%;position:relative;border-top:4px solid var(--gold);}
+.modal-close{position:absolute;top:1.1rem;right:1.1rem;background:var(--card-hi);border:1px solid var(--line-soft);width:34px;height:34px;border-radius:4px;color:var(--muted);cursor:pointer;}
+.modal-box h3{font-family:var(--disp);font-size:1.4rem;margin-bottom:.6rem;color:var(--ink);}
+.modal-box p{color:var(--muted);font-size:.92rem;margin-bottom:1.6rem;}
+.contact-row{display:flex;align-items:center;gap:1rem;background:var(--card-hi);border:1px solid var(--line-soft);border-radius:4px;padding:1rem 1.2rem;
+  text-decoration:none;color:var(--ink);margin-bottom:.7rem;}
+.contact-row:hover{border-color:var(--ink);}
+.contact-row i{color:var(--teal);font-size:1.1rem;width:20px;}
+.contact-row small{display:block;color:var(--dim);font-family:var(--mono);font-size:.68rem;text-transform:uppercase;}
+
+@media(max-width:900px){
+  .sidebar{display:none;}
+  .mobile-bar{display:flex;}
+  main{margin-left:0;padding:1.5rem 1.1rem 3rem;}
+  .hero-grid{grid-template-columns:1fr;}
+  .stat-strip{grid-template-columns:1fr;}
+  .skills-cols{grid-template-columns:1fr;}
+  h2.hero-title{font-size:1.85rem;}
+  .cert-row{grid-template-columns:auto 1fr;}
+  .cert-verify{grid-column:1/-1;justify-self:start;}
+  .edu-head{flex-direction:column;}
+  #bottom-runner-bar{bottom:0;}
+  #amongus-scroller{bottom:6px;}
+}
+</style>
+</head>
+<body>
+<div id="rail"><div id="rail-fill"></div></div>
+
+<div class="mobile-bar">
+  <div class="brand" onclick="go('overview')">
+    <div class="brand-mark">KK</div>
+    <div><h1 style="font-size:.92rem;">Kumar Kartik</h1><p>data_engineer@amdocs</p></div>
+  </div>
+  <div class="mobile-bar-actions">
+    <button class="mobile-connect-btn" onclick="openContact()"><i class="fa-solid fa-paper-plane"></i>Connect</button>
+    <button class="mobile-menu-btn" onclick="toggleDrawer(true)"><i class="fa-solid fa-bars"></i></button>
+  </div>
+</div>
+
+<div class="mobile-drawer" id="mobileDrawer" onclick="if(event.target===this)toggleDrawer(false)">
+  <div class="mobile-drawer-panel">
+    <button class="mobile-drawer-close" onclick="toggleDrawer(false)"><i class="fa-solid fa-xmark"></i></button>
+    <nav class="sb-nav">
+      <button class="sb-item drawer-item active" data-view="overview" onclick="go('overview')"><i class="fa-solid fa-gauge-high"></i>Overview</button>
+      <button class="sb-item drawer-item" data-view="education" onclick="go('education')"><i class="fa-solid fa-graduation-cap"></i>Education</button>
+      <button class="sb-item drawer-item" data-view="pipeline" onclick="go('pipeline')"><i class="fa-solid fa-diagram-project"></i>Pipeline</button>
+      <button class="sb-item drawer-item" data-view="projects" onclick="go('projects')"><i class="fa-solid fa-boxes-stacked"></i>Deployments</button>
+      <button class="sb-item drawer-item" data-view="certs" onclick="go('certs')"><i class="fa-solid fa-shield-halved"></i>Verified</button>
+      <button class="sb-item drawer-item" data-view="terminal" onclick="go('terminal')"><i class="fa-solid fa-terminal"></i>Terminal</button>
+    </nav>
+  </div>
+</div>
+
+<aside class="sidebar">
+  <div class="brand" onclick="go('overview')">
+    <div class="brand-mark">KK</div>
+    <div><h1>Kumar Kartik</h1><p>data_engineer@amdocs</p></div>
+  </div>
+  <div class="status-chip"><span class="status-dot"></span>OPEN TO OPPORTUNITIES</div>
+  <nav class="sb-nav">
+    <button class="sb-item active" data-view="overview" onclick="go('overview')"><i class="fa-solid fa-gauge-high"></i>Overview</button>
+    <button class="sb-item" data-view="education" onclick="go('education')"><i class="fa-solid fa-graduation-cap"></i>Education</button>
+    <button class="sb-item" data-view="pipeline" onclick="go('pipeline')"><i class="fa-solid fa-diagram-project"></i>Pipeline</button>
+    <button class="sb-item" data-view="projects" onclick="go('projects')"><i class="fa-solid fa-boxes-stacked"></i>Deployments</button>
+    <button class="sb-item" data-view="certs" onclick="go('certs')"><i class="fa-solid fa-shield-halved"></i>Verified</button>
+    <button class="sb-item" data-view="terminal" onclick="go('terminal')"><i class="fa-solid fa-terminal"></i>Terminal</button>
+  </nav>
+  <div class="sb-foot">
+    <button class="sb-connect" onclick="openContact()"><i class="fa-solid fa-paper-plane"></i>Connect</button>
+  </div>
+</aside>
+
+<main>
+  <!-- OVERVIEW -->
+  <section class="view active" id="view-overview">
+    <p class="crumb">~/kartik/<b>overview</b></p>
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow-tags">
+          <span class="tag">Snowflake</span><span class="tag">PySpark</span><span class="tag">Azure Databricks</span><span class="tag">dbt</span>
+        </div>
+        <h2 class="hero-title">I build pipelines that don't wake anyone up at 2am.</h2>
+        <p class="lede">Data Engineer at <strong>Amdocs</strong>, Pune — two years spent turning messy, high-volume feeds into Snowflake models that run on schedule, reconcile themselves, and tell you exactly what broke when they don't.</p>
+        <div class="term-cta">
+          <p><i class="fa-solid fa-bolt"></i>Instead of reading, get a feel for what my daily work actually looks like — go hit it.</p>
+          <button class="btn-term" onclick="go('terminal')"><i class="fa-solid fa-terminal"></i>Open terminal</button>
+        </div>
+        <p class="lede">Background is in Electronics &amp; Communication (B.Tech, Bharati Vidyapeeth College of Engineering), which is probably why I think of cloud infrastructure the same way I once thought of circuits: everything either has a clean failure path, or it's a bug waiting to happen.</p>
+        <p class="pulse-note">"If a process runs more than once, it gets automated — no exceptions."</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="go('pipeline')"><i class="fa-solid fa-play"></i>See the pipeline</button>
+          <a class="btn" id="downloadResumeBtn" onclick="downloadResume()"><i class="fa-solid fa-file-arrow-down"></i>Download resume</a>
+        </div>
+      </div>
+      <div class="flow-card">
+        <h4>Live data flow · sample</h4>
+        <svg class="flow-svg" viewBox="0 0 260 150" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 30 C 80 30, 60 75, 130 75 S 180 120, 245 120" stroke="var(--line-soft)" stroke-width="2" fill="none"/>
+          <circle r="10" fill="var(--card)" stroke="var(--teal)" stroke-width="2" cx="15" cy="30"/>
+          <circle r="10" fill="var(--card)" stroke="var(--gold)" stroke-width="2" cx="130" cy="75"/>
+          <circle r="10" fill="var(--card)" stroke="var(--blue)" stroke-width="2" cx="245" cy="120"/>
+          <circle r="4" fill="var(--teal)">
+            <animateMotion dur="3s" repeatCount="indefinite" path="M15 30 C 80 30, 60 75, 130 75 S 180 120, 245 120"/>
+          </circle>
+          <text x="8" y="20" fill="var(--muted)" font-size="9" font-family="IBM Plex Mono">raw</text>
+          <text x="115" y="65" fill="var(--muted)" font-size="9" font-family="IBM Plex Mono">staged</text>
+          <text x="205" y="112" fill="var(--muted)" font-size="9" font-family="IBM Plex Mono">served</text>
+        </svg>
+        <div class="metric-row"><span>Uptime, on-time runs</span><span>99.8%</span></div>
+        <div class="metric-row"><span>Manual effort removed</span><span>100%</span></div>
+        <div class="metric-row"><span>Records reconciled daily</span><span>75,000+</span></div>
+      </div>
+    </div>
+
+    <div class="stat-strip">
+      <div class="stat"><b>9.5 / 10</b><span>B.Tech CGPA, Electronics &amp; Communication</span></div>
+      <div class="stat"><b>2 yrs</b><span>Production data engineering at Amdocs</span></div>
+      <div class="stat"><b>3</b><span>Cloud &amp; Lakehouse certifications</span></div>
+    </div>
+
+    <div class="section-head"><h3>Stack</h3><p>what I actually reach for</p></div>
+    <div class="skills-cols">
+      <div class="skill-col"><h5>Languages</h5><div class="chip-wrap">
+        <span class="chip">Python</span><span class="chip">SnowSQL / ANSI SQL</span><span class="chip">Java</span><span class="chip">ksh / bash</span>
+      </div></div>
+      <div class="skill-col"><h5>Data engineering</h5><div class="chip-wrap">
+        <span class="chip">Snowflake</span><span class="chip">PySpark</span><span class="chip">dbt</span><span class="chip">TWS / IBM Conman</span><span class="chip">GitHub Actions</span>
+      </div></div>
+      <div class="skill-col"><h5>Cloud &amp; platforms</h5><div class="chip-wrap">
+        <span class="chip">Azure Databricks</span><span class="chip">Azure Blob Storage</span><span class="chip">Linux Grid</span><span class="chip">HP Vertica</span>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section class="view" id="view-education">
+    <p class="crumb">~/kartik/<b>education</b></p>
+    <div class="section-head"><h3>Where the foundation was laid</h3><p>degree, coursework &amp; leadership</p></div>
+    <div class="edu-card">
+      <div class="edu-head">
+        <h4>Bharati Vidyapeeth College of Engineering</h4>
+        <span>Oct 2020 – Jun 2024 · Pune, India</span>
+      </div>
+      <p>Bachelor of Technology, Electronics &amp; Communication Engineering — <strong>GPA: 9.5 / 10</strong>.</p>
+      <div class="course-tags">
+        <span class="chip">VLSI</span><span class="chip">Microcontrollers</span><span class="chip">Operating Systems</span>
+        <span class="chip">Data Structures</span><span class="chip">Artificial Intelligence</span><span class="chip">Machine Learning</span>
+        <span class="chip">Fuzzy Logic</span><span class="chip">Databases</span><span class="chip">Optical Networks</span>
+      </div>
+    </div>
+    <div class="lead-card">
+      <div class="edu-head">
+        <h4>Secretary, Rotaract Club of Bharati Vidyapeeth COEP</h4>
+        <span>2023 – 2024 · Pune, India</span>
+      </div>
+      <p>Organised social events and sessions to motivate and engage the student community.</p>
+    </div>
+  </section>
+
+  <!-- PIPELINE / EXPERIENCE -->
+  <section class="view" id="view-pipeline">
+    <p class="crumb">~/kartik/<b>pipeline</b> — Amdocs, Sep 2024 – Present</p>
+    <div class="section-head"><h3>How work moves through my day</h3><p>six stages, in the order they actually run</p></div>
+    <div class="dag">
+      <div class="dag-node">
+        <div class="dag-head"><h4 style="margin:0;">Ingestion — ETL &amp; SnowSQL pipelines</h4><span class="dag-stage">01 / INGEST</span></div>
+        <p>Architected production pipelines moving batch streams into Snowflake via SnowSQL and custom CTL files, with governed staging-to-intermediate transformations.</p>
+        <div class="dag-status"><i class="fa-solid fa-circle-check"></i>Stable · automated batch ingestion</div>
+      </div>
+      <div class="dag-node">
+        <div class="dag-head"><h4 style="margin:0;">Orchestration — job scheduling</h4><span class="dag-stage">02 / SCHEDULE</span></div>
+        <p>Authored and monitored enterprise workload streams on IBM TWS. Built automated fallback and recovery paths, cutting manual intervention on stalled jobs.</p>
+        <div class="dag-status"><i class="fa-solid fa-clock"></i>99.8% on-time delivery</div>
+      </div>
+      <div class="dag-node">
+        <div class="dag-head"><h4 style="margin:0;">Transfer — secure cloud handoff</h4><span class="dag-stage">03 / TRANSFER</span></div>
+        <p>Built fault-tolerant, encrypted SFTP wrappers linking on-prem Linux grid servers to Azure Blob Containers for downstream cloud processing.</p>
+        <div class="dag-status"><i class="fa-solid fa-shield-halved"></i>Zero data loss · rotating credentials</div>
+      </div>
+      <div class="dag-node">
+        <div class="dag-head"><h4 style="margin:0;">Validation — data quality framework</h4><span class="dag-stage">04 / VALIDATE</span></div>
+        <p>Engineered a Python reconciliation suite comparing tens of thousands of rows across Snowflake and Vertica, generating column-level variance reports.</p>
+        <div class="dag-status"><i class="fa-solid fa-microchip"></i>75,000+ rows reconciled per run</div>
+      </div>
+      <div class="dag-node">
+        <div class="dag-head"><h4 style="margin:0;">Observability — monitoring &amp; alerting</h4><span class="dag-stage">05 / MONITOR</span></div>
+        <p>Designed a ksh monitoring engine pulling runtime metrics and job states from IBM Conman, publishing morning summaries for full operational visibility.</p>
+        <div class="dag-status"><i class="fa-solid fa-bell"></i>Alerts fire before SLA breaches</div>
+      </div>
+      <div class="dag-node">
+        <div class="dag-head"><h4 style="margin:0;">Migration — repository harvesting</h4><span class="dag-stage">06 / MIGRATE</span></div>
+        <p>Built an automation engine extracting mappings and sessions as XML from Informatica PowerCenter in parallel, bundling and dispatching them automatically.</p>
+        <div class="dag-status"><i class="fa-solid fa-gauge-high"></i>100% of manual extraction removed</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="view" id="view-projects">
+    <p class="crumb">~/kartik/<b>deployments</b></p>
+    <div class="section-head"><h3>Things I've shipped end to end</h3><p>outside of day-to-day Amdocs work</p></div>
+    <div class="proj-grid">
+      <div class="proj-card">
+        <div><div class="proj-top"><span class="tag">Data warehouse</span><span class="proj-live"><span class="status-dot"></span>Complete</span></div>
+        <h4>Enterprise Sales Data Warehouse</h4>
+        <p>End-to-end ELT warehouse in dbt and Snowflake — staging, intermediate joins, and a dimensional/fact star schema, with incremental models, snapshots, and freshness tests.</p></div>
+        <div class="proj-tech"><span class="chip">Snowflake</span><span class="chip">dbt Core</span><span class="chip">SQL</span><span class="chip">Jinja</span></div>
+      </div>
+      <div class="proj-card">
+        <div><div class="proj-top"><span class="tag">Simulation</span><span class="proj-live"><span class="status-dot"></span>Complete</span></div>
+        <h4>Edge Computing Network Simulation</h4>
+        <p>Load-balancing simulation for distributed edge nodes, with interactive visualizations modelling discrete events, packet queues, and failover under stress.</p></div>
+        <div class="proj-tech"><span class="chip">Python</span><span class="chip">Salabim</span><span class="chip">SimPy</span></div>
+      </div>
+      <div class="proj-card">
+        <div><div class="proj-top"><span class="tag">Backend</span><span class="proj-live"><span class="status-dot"></span>Complete</span></div>
+        <h4>Course Management REST API</h4>
+        <p>RESTful backend in Java and Spring Boot with strict Controller/Service/DAO layering over MySQL, paired with a React.js frontend.</p></div>
+        <div class="proj-tech"><span class="chip">Java</span><span class="chip">Spring Boot</span><span class="chip">MySQL</span><span class="chip">React.js</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERTS -->
+  <section class="view" id="view-certs">
+    <p class="crumb">~/kartik/<b>verified</b></p>
+    <div class="section-head"><h3>Credentials, checked</h3><p>cloud data platforms &amp; lakehouse architecture</p></div>
+    <div class="cert-list">
+      <div class="cert-row">
+        <div class="cert-check"><i class="fa-solid fa-check"></i></div>
+        <div><h4>Databricks Certified Data Engineer Associate</h4><p>DATABRICKS ACADEMY</p></div>
+        <a href="https://credentials.databricks.com/5ca3ecb7-801c-4fdf-91cc-8d37aaceb247#acc.Tr1pIi6S" target="_blank" class="cert-verify">Verify ↗</a>
+        <p class="cert-detail">Delta Lake ACID semantics, PySpark batch &amp; streaming, Delta Live Tables, and job orchestration via Databricks Workflows — plus the medallion architecture and time-travel patterns behind it.</p>
+      </div>
+      <div class="cert-row">
+        <div class="cert-check"><i class="fa-solid fa-check"></i></div>
+        <div><h4>Azure Databricks Data Engineer Associate</h4><p>MICROSOFT CERTIFIED</p></div>
+        <a href="https://learn.microsoft.com/en-us/users/kumarkartik-9637/credentials/8a970612bb4ae9f3" target="_blank" class="cert-verify">Verify ↗</a>
+        <p class="cert-detail">Integrating Azure Databricks with ADF, ADLS Gen2, Key Vault, and Synapse — service-principal auth, pipeline monitoring, and Delta caching for enterprise governance.</p>
+      </div>
+      <div class="cert-row">
+        <div class="cert-check"><i class="fa-solid fa-check"></i></div>
+        <div><h4>Azure AI Fundamentals (AI-900)</h4><p>MICROSOFT CERTIFIED</p></div>
+        <a href="https://learn.microsoft.com/en-us/users/kumarkartik-6193/credentials/5eebc9ebd01368ea" target="_blank" class="cert-verify">Verify ↗</a>
+        <p class="cert-detail">Core ML workflows, computer vision, NLP, and responsible AI as implemented across Azure's cognitive services and ML Studio.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TERMINAL -->
+  <section class="view" id="view-terminal">
+    <p class="crumb">~/kartik/<b>terminal</b></p>
+    <div class="section-head"><h3>Prefer the command line?</h3><p>same resume, fewer clicks</p></div>
+    <div class="term">
+      <div class="term-bar"><div class="term-dots"><span></span><span></span><span></span></div><div class="term-path">kumar@data-grid:~$</div></div>
+      <div class="term-body" id="termBody">
+        <div class="term-line">Welcome. Type <span style="color:#3CD9A8;">help</span> to see commands, or <span style="color:#3CD9A8;">connect</span> to reach me directly.</div>
+      </div>
+      <div class="term-input-row">
+        <span class="term-prompt" id="termPromptLabel">$</span>
+        <div class="term-in-wrap"><input id="termInput" autocomplete="off" spellcheck="false" placeholder="type a command…"/>
+          <button class="term-send" onclick="submitTerm()"><i class="fa-solid fa-arrow-right"></i></button></div>
+      </div>
+      <div class="hints">
+        <span class="hint" onclick="hint('help')">help</span>
+        <span class="hint" onclick="hint('cat experience.txt')">cat experience.txt</span>
+        <span class="hint" onclick="hint('cat skills.json')">cat skills.json</span>
+        <span class="hint" onclick="hint('cat projects.txt')">cat projects.txt</span>
+        <span class="hint" onclick="hint('connect')">connect</span>
+        <span class="hint" onclick="hint('./download_resume.sh')">./download_resume.sh</span>
+        <span class="hint" onclick="hint('clear')">clear</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="contactModal" onclick="closeContact(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeContact()"><i class="fa-solid fa-xmark"></i></button>
+    <h3>Let's talk data</h3>
+    <p>Open to conversations on data engineering, pipeline reliability, and cloud platforms.</p>
+    <a class="contact-row" href="mailto:kumarkartik1920@gmail.com"><i class="fa-solid fa-envelope"></i><div><small>Email</small>kumarkartik1920@gmail.com</div></a>
+    <a class="contact-row" href="tel:+919555726638"><i class="fa-solid fa-phone"></i><div><small>Mobile</small>+91 95557 26638</div></a>
+    <a class="contact-row" href="https://www.linkedin.com/in/kumar-kartik-7453ab26b" target="_blank"><i class="fa-brands fa-linkedin"></i><div><small>LinkedIn</small>Kumar Kartik</div></a>
+  </div>
+</div>
+
+<div id="bottom-runner-bar"><div id="bottom-runner-fill"></div></div>
+<div id="amongus-scroller">
+  <div id="crewmate-wrapper">
+    <svg class="crewmate-body" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="6" y="20" width="10" height="22" rx="4" fill="#991B1B" stroke="#450A0A" stroke-width="3"/>
+      <path d="M16 26C16 14.9543 24.9543 6 36 6C47.0457 6 54 14.9543 54 26V46C54 48.2091 52.2091 50 50 50H20C17.7909 50 16 48.2091 16 46V26Z" fill="#EF4444" stroke="#450A0A" stroke-width="3"/>
+      <rect x="20" y="48" width="10" height="12" rx="3" fill="#EF4444" stroke="#450A0A" stroke-width="3"/>
+      <rect x="36" y="48" width="10" height="12" rx="3" fill="#EF4444" stroke="#450A0A" stroke-width="3"/>
+      <path d="M30 16H48C52.4183 16 56 19.5817 56 24C56 28.4183 52.4183 32 48 32H30C25.5817 32 22 28.4183 22 24C22 19.5817 25.5817 16 30 16Z" fill="#93C5FD" stroke="#450A0A" stroke-width="3"/>
+      <ellipse cx="44" cy="22" rx="6" ry="2.5" transform="rotate(-10 44 22)" fill="#FFF7E8"/>
+    </svg>
+  </div>
+</div>
+
+<script>
+function go(view){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(b=>b.classList.toggle('active', b.dataset.view===view));
+  toggleDrawer(false);
+  window.scrollTo({top:0,behavior:'auto'});
+}
+function toggleDrawer(show){
+  const d=document.getElementById('mobileDrawer');
+  if(show){d.classList.add('show');document.body.style.overflow='hidden';}
+  else{d.classList.remove('show');document.body.style.overflow='';}
+}
+function openContact(){document.getElementById('contactModal').classList.add('active');document.body.style.overflow='hidden';}
+function closeContact(e){if(e && e.target!==e.currentTarget) return; document.getElementById('contactModal').classList.remove('active');document.body.style.overflow='';}
+
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  const pct=h>0?(window.scrollY/h)*100:0;
+  document.getElementById('rail-fill').style.width=pct+'%';
+  document.getElementById('bottom-runner-fill').style.width=pct+'%';
+  const scroller=document.getElementById('amongus-scroller');
+  const wrapper=document.getElementById('crewmate-wrapper');
+  const clamped=Math.min(Math.max(pct,2),98);
+  scroller.style.left=clamped+'%';
+  if(window.scrollY>lastScrollTop){wrapper.style.transform='scaleX(1)';}
+  else if(window.scrollY<lastScrollTop){wrapper.style.transform='scaleX(-1)';}
+  lastScrollTop=window.scrollY<=0?0:window.scrollY;
+});
+let lastScrollTop=window.scrollY;
+
+function downloadResume(){
+  const a=document.createElement('a');a.href='KUMAR_KARTIK_DATAENGINEER.pdf';a.download='KUMAR_KARTIK_DATAENGINEER.pdf';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+
+/* terminal */
+let tState='NORMAL', draft={name:'',contact:'',note:''};
+const termBody=document.getElementById('termBody'), termInput=document.getElementById('termInput'), termPrompt=document.getElementById('termPromptLabel');
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function tPrint(html){const d=document.createElement('div');d.className='term-line';d.innerHTML=html;termBody.appendChild(d);termBody.scrollTop=termBody.scrollHeight;}
+function tEcho(cmd,label){tPrint('<span style="color:#3CD9A8;font-weight:600;">'+label+'</span> <span style="color:#EDEFF2;">'+esc(cmd)+'</span>');}
+function hint(cmd){go('terminal');termInput.value=cmd;handleCmd(cmd);termInput.value='';termInput.focus();}
+function submitTerm(){const v=termInput.value.trim();termInput.value='';handleCmd(v);termInput.focus();}
+termInput.addEventListener('keydown',e=>{if(e.key==='Enter')submitTerm();});
+
+function handleCmd(raw){
+  if(!raw && tState==='NORMAL') return;
+  if(tState==='WAITING_NAME'){tEcho(raw,'Name:');draft.name=raw||'Anonymous Colleague';tState='WAITING_EMAIL';termPrompt.textContent='Email (Optional):';
+    tPrint('Nice to meet you, '+esc(draft.name)+'! Please enter your Email address (or press Enter to skip):');return;}
+  if(tState==='WAITING_EMAIL'){tEcho(raw,'Email:');draft.contact=raw||'Not provided';tState='WAITING_NOTE';termPrompt.textContent='Type a message:';
+    tPrint('Got it! Type a message (what you liked, inquiries, job opportunities, etc.):');return;}
+  if(tState==='WAITING_NOTE'){tEcho(raw,'Message:');draft.note=raw||'No message provided.';tState='NORMAL';termPrompt.textContent='$';
+    const subject=encodeURIComponent('Portfolio Connect: Message from '+draft.name);
+    const body=encodeURIComponent('Name: '+draft.name+'\nEmail: '+draft.contact+'\n\nMessage:\n'+draft.note);
+    tPrint('<span style="color:#3CD9A8;font-weight:700;">[STATUS 200: OK] Message compiled!</span><br>------------------------------------------------------<br>'+
+      'Sender  : '+esc(draft.name)+'<br>Contact : '+esc(draft.contact)+'<br>Message : '+esc(draft.note)+'<br>------------------------------------------------------<br>'+
+      '<span style="color:#3CD9A8;">Opening default mail client to dispatch this to kumarkartik1920@gmail.com…</span>');
+    window.location.href='mailto:kumarkartik1920@gmail.com?subject='+subject+'&body='+body;return;}
+
+  const c=raw.toLowerCase();
+  if(c==='./download_resume.sh'||c==='download_resume.sh'||c==='download resume'||c==='resume'){
+    tEcho(raw,'$');
+    tPrint('<span style="color:#3CD9A8;">[+] Executing ./download_resume.sh …</span><br>Fetching KUMAR_KARTIK_DATAENGINEER.pdf …');
+    downloadResume();
+    tPrint('<span style="color:#F2621E;font-weight:bold;">[SUCCESS]</span> PDF resume download triggered.');
+    return;
+  }
+  tEcho(raw,'$');
+  switch(c){
+    case 'help':
+      tPrint('<span style="color:#F2621E;font-weight:bold;">— Interactive Terminal Help —</span><br>'+
+        '<b style="color:#3CD9A8;">cat experience.txt</b> — detailed breakdown of Amdocs data engineering workflows<br>'+
+        '<b style="color:#3CD9A8;">cat skills.json</b> — technical stack in JSON format<br>'+
+        '<b style="color:#3CD9A8;">cat projects.txt</b> — end-to-end warehouse &amp; simulation projects<br>'+
+        '<b style="color:#3CD9A8;">connect</b> — send a direct email to me (fields can be skipped)<br>'+
+        '<b style="color:#3CD9A8;">./download_resume.sh</b> — trigger a direct download of the PDF resume<br>'+
+        '<b style="color:#3CD9A8;">clear</b> — clear screen');
+      break;
+    case 'cat experience.txt':
+      tPrint('<span style="color:#F2621E;font-weight:bold;">AMDOCS — DATA ENGINEER (FULL-TIME) | SEP 2024 – PRESENT | PUNE, INDIA</span><br>'+
+        '-----------------------------------------------------------------------------------------<br>'+
+        '• <b style="color:#3CD9A8;">ETL Pipelines:</b> Designed end-to-end ETL pipelines using SnowSQL, Snowflake CTL files, and automated workflow components for reliable, scalable ingestion.<br>'+
+        '• <b style="color:#3CD9A8;">Enterprise Scheduling:</b> Built and scheduled enterprise-grade jobs using IBM TWS Scheduler, improving operational efficiency and on-time delivery.<br>'+
+        '• <b style="color:#3CD9A8;">Automation Scripting:</b> Developed ksh and Python automation scripts for secure file transfers, continuous monitoring, and data validation.<br>'+
+        '• <b style="color:#3CD9A8;">Cloud Wrappers:</b> Engineered secure SFTP wrapper scripts moving files from on-prem Linux grid servers to Azure Blob Containers.<br>'+
+        '• <b style="color:#3CD9A8;">Data Quality Framework:</b> Architected a Python validation framework comparing datasets across Snowflake and Vertica (up to 75,000 records), generating column-wise audit reports.<br>'+
+        '• <b style="color:#3CD9A8;">Informatica XML Harvester:</b> Designed an automation engine to extract mappings/sessions as XML from PowerCenter in parallel, bundling into ZIPs and mailing status updates — removing 100% of manual effort.');
+      break;
+    case 'cat skills.json':
+      tPrint('{<br>&nbsp;&nbsp;<span style="color:#F2621E;">"languages"</span>: ["Python", "SQL (SnowSQL / ANSI)", "Java", "Linux Shell (ksh / bash)"],<br>'+
+        '&nbsp;&nbsp;<span style="color:#F2621E;">"data_engineering_tools"</span>: ["Snowflake", "PySpark", "dbt (Data Build Tool)", "TWS Scheduler (IBM Conman)", "GIT"],<br>'+
+        '&nbsp;&nbsp;<span style="color:#F2621E;">"cloud_and_platforms"</span>: ["Azure Databricks", "Azure Blob Storage", "Linux Grid Systems", "HP Vertica"],<br>'+
+        '&nbsp;&nbsp;<span style="color:#F2621E;">"soft_skills"</span>: ["Leadership", "Event Management", "Cross-functional Collaboration", "Pipeline Reliability Engineering"]<br>}');
+      break;
+    case 'cat projects.txt':
+      tPrint('<span style="color:#F2621E;font-weight:bold;">KEY ENGINEERING PROJECTS</span><br>'+
+        '-----------------------------------------------------------------------------------------<br>'+
+        '1. <b style="color:#3CD9A8;">Enterprise Sales Data Warehouse</b> — end-to-end ELT warehouse using dbt and Snowflake. Staging, intermediate, and dimensional/fact layers, with historical snapshots, freshness checks, and automated tests.<br><br>'+
+        '2. <b style="color:#3CD9A8;">Edge Computing Server Simulation</b> — dynamic load-balancing simulation for edge computing nodes using Python, Salabim, and SimPy, with interactive GUI components modelling discrete events and failovers.<br><br>'+
+        '3. <b style="color:#3CD9A8;">Course Management Spring REST API</b> — enterprise RESTful API using Java, Spring Boot, and MySQL with DAO-layered architecture and a React.js frontend.');
+      break;
+    case 'connect':
+      tState='WAITING_NAME';termPrompt.textContent='Name (optional):';
+      tPrint('Starting interactive contact form…<br>Please enter your Name (or press Enter to skip):');
+      break;
+    case 'clear':
+      termBody.innerHTML='';
+      break;
+    default:
+      tPrint('bash: '+esc(raw)+': command not found. Type <b style="color:#3CD9A8;">help</b> to inspect valid commands.');
+  }
+}
+</script>
+</body>
+</html>
