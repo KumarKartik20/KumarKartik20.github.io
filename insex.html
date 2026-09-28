@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#050505" />
+    <title>Kumar Kartik - Data Engineer</title>
+    <link id="favicon" rel="icon" type="image/svg+xml" href="favicon.svg">
+    <script>document.documentElement.classList.add('js')</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<header class="topbar" id="topbar">
+    <button class="brand" data-go="overview" aria-label="Home">
+        <span class="brand-mark">KK</span>
+        <span class="brand-text"><b>Kumar Kartik</b><small>data_engineer@amdocs</small></span>
+    </button>
+    <nav class="topnav" id="topnav">
+        <button class="topnav-item active" data-go="overview">Overview</button>
+        <button class="topnav-item" data-go="education">Education</button>
+        <button class="topnav-item" data-go="experience">Experience</button>
+        <button class="topnav-item" data-go="projects">Deployments</button>
+        <button class="topnav-item" data-go="certs">Verified</button>
+        <button class="topnav-item" data-go="terminal">Terminal</button>
+        <span class="nav-ind" id="navInd"></span>
+    </nav>
+    <div class="top-actions">
+        <button class="btn-connect" id="btnConnect" aria-label="Connect"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>Connect</span></button>
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+    </div>
+</header>
+
+<div class="drawer" id="drawer">
+    <div class="drawer-panel">
+        <button class="drawer-close" id="drawerClose" aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
+        <nav>
+            <button class="drawer-item active" style="--i:0" data-go="overview"><i class="fa-solid fa-gauge-high"></i>Overview</button>
+            <button class="drawer-item" style="--i:1" data-go="education"><i class="fa-solid fa-graduation-cap"></i>Education</button>
+            <button class="drawer-item" style="--i:2" data-go="experience"><i class="fa-solid fa-diagram-project"></i>Experience</button>
+            <button class="drawer-item" style="--i:3" data-go="projects"><i class="fa-solid fa-boxes-stacked"></i>Deployments</button>
+            <button class="drawer-item" style="--i:4" data-go="certs"><i class="fa-solid fa-shield-halved"></i>Verified</button>
+            <button class="drawer-item" style="--i:5" data-go="terminal"><i class="fa-solid fa-terminal"></i>Terminal</button>
+        </nav>
+    </div>
+</div>
+
+<main>
+    <!-- ====== OVERVIEW ====== -->
+    <section class="view active" id="view-overview">
+        <div class="hero">
+            <div class="hero-text">
+                <p class="crumb">~/kartik/<b>overview</b></p>
+                <h1 class="hero-name"><span id="typeName" data-text="Kumar Kartik">Kumar Kartik</span><span class="caret" aria-hidden="true"></span></h1>
+                <h2 class="hero-title reveal">Data Engineer specializing in scalable ETL pipelines and cloud data infrastructure.</h2>
+                <div class="tags reveal"><span>Snowflake</span><span>Databricks</span><span>DBT</span><span>PySpark</span></div>
+                <p class="lede reveal">Currently building and maintaining production data pipelines at <strong>Amdocs</strong>, Pune, with two years of experience across ingestion, orchestration, and data quality. My work focuses on transforming high-volume feeds into reliable Snowflake models and reducing manual intervention across the pipeline lifecycle.</p>
+                <div class="term-cta reveal">
+                    <p><i class="fa-solid fa-bolt"></i>For a closer look at how I approach these workflows, explore the interactive terminal.</p>
+                    <button class="btn-term" data-go="terminal"><i class="fa-solid fa-terminal"></i>Open terminal</button>
+                </div>
+                <p class="lede reveal">My academic background is in Electronics and Communication Engineering (B.Tech, Bharati Vidyapeeth College of Engineering), which shaped a structured, systems-oriented approach to designing and troubleshooting data infrastructure.</p>
+                <p class="pulse-note reveal">"If a process runs more than once, it gets automated - no exceptions."</p>
+                <div class="hero-actions reveal">
+                    <button class="btn btn-primary" data-go="experience"><i class="fa-solid fa-play"></i>See the experience</button>
+                    <a class="btn" id="btnResume" href="#"><i class="fa-solid fa-file-arrow-down"></i>Download resume</a>
+                </div>
+            </div>
+            <div class="hero-flow reveal">
+                <h4>Live data flow <sample></h4>
+                <svg class="flow-svg" viewBox="0 0 300 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Data flow: raw data, ETL, scheduling, served">
+                    <path class="fpath" d="M60 40 C 120 70, 20 110, 60 150 S 120 220, 60 260 S 120 330, 60 370 S 100 410, 60 430"/>
+                    <circle class="fdot" r="4.5"><animateMotion dur="4s" repeatCount="indefinite" path="M60 40 C 120 70, 20 110, 60 150 S 120 220, 60 260 S 120 330, 60 370 S 100 410, 60 430"/></circle>
+                    <circle class="fnode" r="11" cx="60" cy="40" style="--c:#D14836;--i:0"/>
+                    <text class="flabel" x="82" y="36">Raw data</text><text class="fsub" x="82" y="52">Flat files / Oracle</text>
+                    <circle class="fnode" r="11" cx="60" cy="150" style="--c:#ECD06F;--i:1"/>
+                    <text class="flabel" x="82" y="146">ETL</text><text class="fsub" x="82" y="162">SnowSQL / Snowflake CTL</text>
+                    <circle class="fnode" r="11" cx="60" cy="260" style="--c:#E8604C;--i:2"/>
+                    <text class="flabel" x="82" y="256">Scheduling</text><text class="fsub" x="82" y="272">IBM TWS / Conman</text>
+                    <circle class="fnode" r="11" cx="60" cy="370" style="--c:#F4EFE3;--i:3"/>
+                    <text class="flabel" x="82" y="366">Served</text><text class="fsub" x="82" y="382">Snowflake serving layer</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat reveal"><b data-count="9.5" data-dec="1" data-suffix=" / 10">9.5 / 10</b><span>B.Tech CGPA, Electronics &amp; Communication</span></div>
+            <div class="stat reveal"><b data-count="2" data-suffix=" yrs+">2 yrs+</b><span>Production data engineering at Amdocs</span></div>
+            <div class="stat reveal"><b data-count="3">3</b><span>Cloud &amp; Lakehouse certifications</span></div>
+        </div>
+
+        <div class="sub-head reveal"><h3>Core responsibilities</h3><p>how the role breaks down day to day</p></div>
+        <div class="cols3">
+            <div class="col reveal"><p>A typical day begins with reviewing overnight job runs - verifying schedule outcomes through TWS logs and confirming that no pipeline has failed silently. From there, the work spans writing and refining SnowSQL transformations, maintaining Python-based reconciliation scripts, and coordinating with the operations team to resolve discrepancies between Snowflake and Vertica data stores.</p></div>
+            <div class="col reveal"><p>A significant part of the role involves translating ambiguous requirements into concrete technical solutions - diagnosing the root cause behind a data quality issue, and replacing a manual, repetitive process with an automated one. That principle underlies most of the tooling referenced below: the Informatica XML extraction utility, the secure SFTP transfer wrappers, and the automated monitoring scripts were each built to remove a recurring manual step from the pipeline lifecycle.</p></div>
+            <div class="col reveal"><p>Beyond pipeline development, the role includes ongoing collaboration with data engineering and operations teams to troubleshoot production issues, review pipeline health, and continuously refine existing workflows for better performance and lower long-term maintenance overhead.</p></div>
+        </div>
+
+        <div class="sub-head reveal"><h3>Stack</h3><p>what I actually reach for</p></div>
+        <div class="cols3">
+            <div class="col reveal"><h5>Languages</h5><div class="chips"><span>Python</span><span>SnowSQL / ANSI SQL</span><span>Java</span><span>ksh / bash</span></div></div>
+            <div class="col reveal"><h5>Data engineering</h5><div class="chips"><span>Snowflake</span><span>PySpark</span><span>dbt</span><span>TWS / IBM Conman</span><span>GitHub Actions</span></div></div>
+            <div class="col reveal"><h5>Cloud &amp; platforms</h5><div class="chips"><span>Azure Databricks</span><span>Azure Blob Storage</span><span>Linux Grid</span><span>HP Vertica</span></div></div>
+        </div>
+
+        <div class="sub-head reveal"><h3>Approach</h3><p>the principles that shape how I build</p></div>
+        <div class="cols3">
+            <div class="col reveal"><h5>Reliability over cleverness</h5><p>I prioritize predictable, well-monitored pipelines over intricate solutions that are difficult for anyone else to maintain, debug, or hand over.</p></div>
+            <div class="col reveal"><h5>Automate the repeatable</h5><p>If a task is performed manually more than once, it's treated as a candidate for automation - from file transfers to audit reports.</p></div>
+            <div class="col reveal"><h5>Root cause, then resolution</h5><p>I turn production challenges into documented improvements through root-cause analysis, automation, and clear communication.</p></div>
+        </div>
+    </section>
+
+    <!-- ====== EDUCATION ====== -->
+    <section class="view" id="view-education">
+        <div class="sec-head reveal">
+            <p class="crumb">~/kartik/<b>education</b></p>
+            <h3 class="sec-title">Where the foundation<br>was laid.</h3>
+            <p class="sec-sub">Degree, coursework and leadership.</p>
+        </div>
+        <div class="edu">
+            <div class="edu-block reveal">
+                <h4>Bharati Vidyapeeth College of Engineering</h4>
+                <p class="meta">Oct 2020 - Jun 2024 &middot; Pune, India</p>
+                <p>Bachelor of Technology, Electronics &amp; Communication Engineering - <strong>GPA: 9.5 / 10</strong>.</p>
+                <div class="chips"><span>VLSI</span><span>Microcontrollers</span><span>Operating Systems</span><span>Data Structures</span><span>Artificial Intelligence</span><span>Machine Learning</span><span>Fuzzy Logic</span><span>Databases</span><span>Optical Networks</span></div>
+            </div>
+            <div class="edu-block reveal">
+                <h4>Secretary, Rotaract Club of Bharati Vidyapeeth COEP</h4>
+                <p class="meta">2023 - 2024 &middot; Pune, India</p>
+                <p>Organised social events and sessions to motivate and engage the student community.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== PIPELINE / EXPERIENCE ====== -->
+    <section class="view" id="view-experience">
+        <div class="sec-head reveal">
+            <p class="crumb">~/kartik/<b>pipeline</b> - Amdocs, Sep 2024 - Present</p>
+            <h3 class="sec-title">How work moves<br>through my day.</h3>
+            <p class="sec-sub">Six stages, in the order they actually run.</p>
+        </div>
+        <div class="dag" id="dag">
+            <div class="dag-node reveal reveal-l">
+                <span class="dag-stage">01 / INGEST</span><h4>Ingestion - ETL &amp; SnowSQL pipelines</h4>
+                <p>This is the front door of the pipeline. Batch feeds arrive as flat files and Oracle extracts, and I land them in Snowflake with SnowSQL and custom CTL files. The load stops in a governed staging layer first. The SnowSQL transforms that follow build the intermediate models everything else in the stream depends on.</p>
+                <p>Staging stays separate from the serving layer so a late file, a short file, or a changed layout fails somewhere it can be reloaded, instead of rewriting tables that are already being queried. The CTL contract and the transform steps are what make that ingest the same run every night, rather than a script someone edits by hand when it breaks.</p>
+                <div class="dag-status"><i class="fa-solid fa-circle-check"></i>Stable automated batch ingestion</div>
+            </div>
+            <div class="dag-node reveal reveal-r">
+                <span class="dag-stage">02 / SCHEDULE</span><h4>Orchestration - job scheduling</h4>
+                <p>IBM TWS is what runs those steps in the right order. I author the job streams, the dependencies between ingest, transform, and publish, and the calendars they follow, then watch the overnight cycle so a failed or stalled job is visible before the morning handoff.</p>
+                <p>Where a stream used to sit until someone restarted it, I built fallback and recovery paths so the schedule can continue without that manual step. Keeping the stream definitions current as new feeds are added is part of the same work, and it is what holds on-time delivery at 99.8%.</p>
+                <div class="dag-status"><i class="fa-solid fa-clock"></i>99.8% on-time delivery</div>
+            </div>
+            <div class="dag-node reveal reveal-l">
+                <span class="dag-stage">03 / TRANSFER</span><h4>Transfer - secure cloud handoff</h4>
+                <p>A lot of the estate still finishes on the on-prem Linux grid, while the next consumer expects a file in Azure Blob. I built SFTP wrappers that pick up those finished extracts and place them in Azure Blob Containers, with the transfer encrypted and the credentials rotated instead of left sitting in a script.</p>
+                <p>The wrappers are fault-tolerant on purpose. A dropped connection is retried, and a partial copy is not treated as a successful handoff. The blob is only trusted once the transfer has completed, which is the operating rule behind zero data loss on this path.</p>
+                <div class="dag-status"><i class="fa-solid fa-shield-halved"></i>Zero data loss rotating credentials</div>
+            </div>
+            <div class="dag-node reveal reveal-r">
+                <span class="dag-stage">04 / VALIDATE</span><h4>Validation - data quality framework</h4>
+                <p>After the transform, Snowflake and Vertica still have to describe the same data. I engineered a Python reconciliation suite that compares the two side by side, at column level, across runs of 75,000+ rows, and writes a variance report rather than a single pass or fail.</p>
+                <p>The report is where an investigation starts: which keys differ, which columns moved, and by how much. Row counts hide a bad cast, a filter that dropped the wrong slice, or an update that landed on only one platform. The column-level diff is what surfaces those before the batch is treated as production truth.</p>
+                <div class="dag-status"><i class="fa-solid fa-microchip"></i>75,000+ rows reconciled per run</div>
+            </div>
+            <div class="dag-node reveal reveal-l">
+                <span class="dag-stage">05 / MONITOR</span><h4>Observability - monitoring &amp; alerting</h4>
+                <p>The first sign of a failure should come from the pipeline, not from the person waiting on the data. I designed a ksh monitoring engine that reads runtime metrics and job state from IBM Conman - what started, how long it ran, and how it ended - and publishes a morning summary operations can scan in one pass.</p>
+                <p>Thresholds are set so the alert fires while a rerun is still useful, before the SLA window closes. Read across successive mornings, the same summary also shows which streams are drifting slower. That is usually the earlier signal that a query or a growing file needs attention.</p>
+                <div class="dag-status"><i class="fa-solid fa-bell"></i>Alerts fire before SLA breaches</div>
+            </div>
+            <div class="dag-node reveal reveal-r">
+                <span class="dag-stage">06 / MIGRATE</span><h4>Migration - repository harvesting</h4>
+                <p>Moving work off Informatica PowerCenter meant getting every mapping and session out of the repository. not a partial export done by clicking through the client. I built an automation engine that extracts those objects as XML, in parallel, then bundles them and dispatches the package with a status update.</p>
+                <p>That removed the manual extraction step entirely. In its place is a run that can be repeated and a bundle that can be reviewed, instead of a folder of files that depended on someone remembering each session and saving a current copy.</p>
+                <div class="dag-status"><i class="fa-solid fa-gauge-high"></i>100% of manual extraction removed</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== PROJECTS ====== -->
+    <section class="view" id="view-projects">
+        <div class="sec-head reveal">
+            <p class="crumb">~/kartik/<b>deployments</b></p>
+            <h3 class="sec-title">Things I've shipped<br>end to end.</h3>
+            <p class="sec-sub">Personal projects, outside of day-to-day Amdocs work.</p>
+        </div>
+        <div class="cols3">
+            <div class="item reveal">
+                <div class="idx"><span>01</span> Data warehouse<span class="live">Complete</span></div>
+                <h4>Enterprise Sales Data Warehouse</h4>
+                <p>End-to-end ELT warehouse in dbt and Snowflake - staging, intermediate joins, and a dimensional/fact star schema, with incremental models, snapshots, and freshness tests.</p>
+                <div class="chips"><span>Snowflake</span><span>dbt Core</span><span>SQL</span><span>Jinja</span></div>
+            </div>
+            <div class="item reveal">
+                <div class="idx"><span>02</span> Simulation<span class="live">Complete</span></div>
+                <h4>Edge Computing Network Simulation</h4>
+                <p>Load-balancing simulation for distributed edge nodes, with interactive visualizations modelling discrete events, packet queues, and failover under stress.</p>
+                <div class="chips"><span>Python</span><span>Salabim</span><span>SimPy</span></div>
+            </div>
+            <div class="item reveal">
+                <div class="idx"><span>03</span> Backend<span class="live">Complete</span></div>
+                <h4>Course Management REST API</h4>
+                <p>RESTful backend in Java and Spring Boot with strict Controller/Service/DAO layering over MySQL, paired with a React.js frontend.</p>
+                <div class="chips"><span>Java</span><span>Spring Boot</span><span>MySQL</span><span>React.js</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== CERTIFICATIONS ====== -->
+    <section class="view" id="view-certs">
+        <div class="sec-head reveal">
+            <p class="crumb">~/kartik/<b>verified</b></p>
+            <h3 class="sec-title">Credentials,<br>checked.</h3>
+            <p class="sec-sub">Cloud data platforms and lakehouse architecture.</p>
+        </div>
+        <div class="cols3">
+            <div class="item reveal">
+                <div class="idx"><span>Databricks Academy</span><i class="fa-solid fa-circle-check live"></i></div>
+                <h4>Databricks Certified Data Engineer Associate</h4>
+                <a class="verify" href="https://credentials.databricks.com/5ca3ecb7-801c-4fdf-91cc-8d37aaceb247#acc.TripIi6S" target="_blank" rel="noopener">Verify <i class="fa-solid fa-arrow-right"></i></a>
+                <p>Delta Lake ACID semantics, PySpark batch &amp; streaming, Delta Live Tables, and job orchestration via Databricks Workflows - plus the medallion architecture and time-travel patterns behind it.</p>
+            </div>
+            <div class="item reveal">
+                <div class="idx"><span>Microsoft Certified</span><i class="fa-solid fa-circle-check live"></i></div>
+                <h4>Azure Databricks Data Engineer Associate</h4>
+                <a class="verify" href="https://learn.microsoft.com/en-us/users/kumarkartik-9637/credentials/8a970612bb4ee9f3" target="_blank" rel="noopener">Verify <i class="fa-solid fa-arrow-right"></i></a>
+                <p>Integrating Azure Databricks with ADF, ADLS Gen2, Key Vault, and Synapse - service-principal auth, pipeline monitoring, and Delta caching for enterprise governance.</p>
+            </div>
+            <div class="item reveal">
+                <div class="idx"><span>Microsoft Certified</span><i class="fa-solid fa-circle-check live"></i></div>
+                <h4>Azure AI Fundamentals (AI-900)</h4>
+                <a class="verify" href="https://learn.microsoft.com/en-us/users/kumarkartik-6193/credentials/5eebc9ebd01368ea" target="_blank" rel="noopener">Verify <i class="fa-solid fa-arrow-right"></i></a>
+                <p>Core ML workflows, computer vision, NLP, and responsible AI as implemented across Azure's cognitive services and ML Studio.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== TERMINAL ====== -->
+    <section class="view" id="view-terminal">
+        <div class="sec-head reveal">
+            <p class="crumb">~/kartik/<b>terminal</b></p>
+            <h3 class="sec-title">Prefer the<br>command line?</h3>
+            <p class="sec-sub">Same resume, fewer clicks. Try <kbd>&uarr;</kbd> / <kbd>&darr;</kbd> for history and Tab to autocomplete.</p>
+        </div>
+        <div class="term reveal">
+            <div class="term-bar"><div class="term-dots"><span></span><span></span><span></span></div><div class="term-path">kumar@data-grid:~$</div></div>
+            <div class="term-body" id="termBody">
+                <div class="term-line">Same career, as files you can open. Type <span style="color:#ECD06F">help</span> for the command list, <span style="color:#ECD06F">cat experience.txt</span> for the Amdocs workflows, or <span style="color:#ECD06F">connect</span> to reach me.</div>
+            </div>
+            <div class="term-input-row">
+                <span class="term-prompt" id="termPrompt">$</span>
+                <div class="term-in-wrap"><input id="termInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type a command..." />
+                    <button class="term-send" id="termSend" aria-label="Run"><i class="fa-solid fa-arrow-right"></i></button></div>
+            </div>
+            <div class="hints">
+                <button class="hint" data-cmd="help">help</button>
+                <button class="hint" data-cmd="cat experience.txt">cat experience.txt</button>
+                <button class="hint" data-cmd="cat skills.json">cat skills.json</button>
+                <button class="hint" data-cmd="cat projects.txt">cat projects.txt</button>
+                <button class="hint" data-cmd="connect">connect</button>
+                <button class="hint" data-cmd="./download_resume.sh">./download_resume.sh</button>
+                <button class="hint" data-cmd="clear">clear</button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div class="modal" id="contactModal">
+    <div class="modal-box">
+        <button class="modal-close" id="modalClose" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+        <h3>Let's talk data</h3>
+        <p>Open to conversations on data engineering, pipeline reliability, and cloud platforms.</p>
+        <a class="contact-row" href="mailto:kumarkartik1920@gmail.com"><i class="fa-solid fa-envelope"></i><div><small>Email</small>kumarkartik1920@gmail.com</div></a>
+        <a class="contact-row" href="tel:+919555726638"><i class="fa-solid fa-phone"></i><div><small>Mobile</small>+91 95557 26638</div></a>
+        <a class="contact-row" href="https://www.linkedin.com/in/kumar-kartik-7453ab26b" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin"></i><div><small>LinkedIn</small>Kumar Kartik</div></a>
+    </div>
+</div>
+
+<div id="runnerBar"><div id="runnerFill"></div></div>
+<div id="runner">
+    <div id="crewWrap">
+        <svg class="crew" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="20" width="10" height="22" rx="4" fill="#991B1B" stroke="#450A0A" stroke-width="3"/>
+            <path d="M16 26C16 14.9543 24.9543 6 36 6C47.0457 6 54 14.9543 54 26V46C54 48.2091 52.2091 50 50 50H20C17.7909 50 16 48.2091 16 46V26Z" fill="#EF4444" stroke="#450A0A" stroke-width="3"/>
+            <rect x="20" y="48" width="10" height="12" rx="3" fill="#EF4444" stroke="#450A0A" stroke-width="3"/>
+            <rect x="36" y="48" width="10" height="12" rx="3" fill="#EF4444" stroke="#450A0A" stroke-width="3"/>
+            <path d="M30 16H48C52.4183 16 56 19.5817 56 24C56 28.4183 52.4183 32 48 32H30C25.5817 32 22 28.4183 22 24C22 19.5817 25.5817 16 30 16Z" fill="#93C5FD" stroke="#450A0A" stroke-width="3"/>
+            <ellipse cx="44" cy="22" rx="6" ry="2.5" transform="rotate(-10 44 22)" fill="#FFE7E8"/>
+        </svg>
+    </div>
+</div>
+
+<script src="main.js" defer></script>
+</body>
+</html>
